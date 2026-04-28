@@ -1,0 +1,3250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>John & Verna</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet" />
+  
+  <style>
+    :root {
+      --bg1: #100814;
+      --bg2: #241028;
+      --bg3: #3a1833;
+      --line: rgba(255, 255, 255, 0.14);
+      --text: #fff8fc;
+      --muted: #ecdde5;
+      --shadow: 0 22px 64px rgba(0, 0, 0, 0.34);
+
+      --paper-1: #f6e8c8;
+      --paper-2: #ead4ac;
+      --ink: #573a28;
+
+      --cover-a: #ff4fa8;
+      --cover-b: #6a39d3;
+      --cover-c: #3466ff;
+
+      --book-font-size: 14px;
+      --book-line-height: 25px;
+      --book-text-height: 525px; 
+      --book-base-width: 940;
+      --book-base-height: 670;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 12%, rgba(255,120,170,0.12), transparent 18%),
+        radial-gradient(circle at 85% 10%, rgba(255,255,255,0.08), transparent 18%),
+        radial-gradient(circle at 50% 100%, rgba(255,255,255,0.05), transparent 24%),
+        linear-gradient(135deg, var(--bg1), var(--bg2) 48%, var(--bg3));
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.55;
+      background:
+        radial-gradient(circle at 18% 28%, rgba(255,255,255,0.06), transparent 1.5%),
+        radial-gradient(circle at 72% 62%, rgba(255,255,255,0.05), transparent 1.5%),
+        radial-gradient(circle at 88% 34%, rgba(255,255,255,0.05), transparent 1.6%);
+    }
+
+    /* --- HEART DOUBLE CLICK ANIMATION --- */
+    .heart-click-wrap {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+    .heart-icon {
+      color: #ff4fa8;
+      font-size: 3.5rem;
+      animation: heartPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      text-shadow: 0 0 20px rgba(255, 79, 168, 0.6);
+      display: grid;
+      place-items: center;
+    }
+    .heart-pulse {
+      position: absolute;
+      inset: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      border: 2px solid #ff4fa8;
+      transform: translate(-50%, -50%);
+      animation: heartPulseAnim 0.8s ease-out forwards;
+    }
+    .sparkle {
+      position: absolute;
+      inset: 50%;
+      width: 8px;
+      height: 8px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #ff4fa8, 0 0 20px #ff4fa8;
+      animation: sparkleAnim 0.8s ease-out forwards;
+    }
+    @keyframes heartPop {
+      0% { transform: scale(0); opacity: 1; }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); opacity: 0; }
+    }
+    @keyframes heartPulseAnim {
+      0% { width: 0; height: 0; opacity: 1; border-width: 6px; }
+      100% { width: 140px; height: 140px; opacity: 0; border-width: 0px; }
+    }
+    @keyframes sparkleAnim {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+    }
+
+    .glass {
+      background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.08));
+      border: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      border-radius: 28px;
+    }
+
+    /* --- UNIFIED MAIN TOPBAR --- */
+    .main-topbar {
+      width: min(1440px, 96%);
+      margin: 14px auto 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .control-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 10px;
+    }
+
+    .date-chip,
+    .pray-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: 0.8rem;
+      font-weight: 700;
+      line-height: 1.35;
+      text-align: center;
+    }
+    .pray-chip {
+      color: #ffdceb;
+      font-weight: 600;
+    }
+
+    .weather-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.12);
+      min-width: 88px;
+    }
+    .weather-icon {
+      width: 18px;
+      text-align: center;
+      font-size: 0.92rem;
+      flex: 0 0 18px;
+    }
+    .weather-info { line-height: 1; }
+    .weather-city { font-size: 0.66rem; color: var(--muted); margin-bottom: 3px; }
+    .weather-temp { font-size: 0.8rem; font-weight: 800; }
+    .weather-mini-wrap {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .couple-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .couple-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.2);
+      flex: 0 0 54px;
+    }
+    .couple-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .couple-text h1 {
+      margin: 0;
+      font-size: clamp(1rem, 1.6vw, 1.35rem);
+      white-space: nowrap;
+    }
+
+    .food-chip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border-radius: 16px;
+      background: rgba(255, 79, 168, 0.15);
+      border: 1px solid rgba(255, 79, 168, 0.3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      text-align: left;
+      max-width: 100%;
+    }
+    .food-icon {
+      width: 28px;
+      height: 28px;
+      fill: #ff4fa8;
+      filter: drop-shadow(0 0 4px rgba(255, 79, 168, 0.4));
+    }
+    .food-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .food-title {
+      font-size: 0.65rem;
+      color: #ffdceb;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 3px;
+      font-weight: 700;
+    }
+    .food-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .top-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .countdown-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: rgba(255, 79, 168, 0.25);
+      border: 1px solid rgba(255, 79, 168, 0.4);
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #fff;
+    }
+    .countdown-chip button {
+      background: transparent;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+      padding: 0;
+      font-size: 0.8rem;
+    }
+
+    .yellow-note-btn {
+      background: #ffdd57 !important;
+      border: 1px solid #e6c84c !important;
+      color: #333 !important;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      transition: transform 0.2s;
+    }
+    .yellow-note-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .tiny-btn,
+    .icon-btn,
+    .menu-panel button,
+    .slider-nav button,
+    .slider-dots button,
+    .calendar-nav button,
+    .book-controls button,
+    .book-tabs button,
+    .note-modal button,
+    .play-icon-btn {
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+      color: var(--text);
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.16);
+    }
+
+    .tiny-btn:hover,
+    .icon-btn:hover,
+    .menu-panel button:hover,
+    .slider-nav button:hover,
+    .slider-dots button:hover,
+    .calendar-nav button:hover,
+    .book-controls button:hover,
+    .book-tabs button:hover,
+    .note-modal button:hover,
+    .play-icon-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.22);
+    }
+
+    .tiny-btn {
+      padding: 7px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .play-icon-btn,
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      font-size: 1rem;
+    }
+
+    /* --- NOTIFICATION STYLES --- */
+    .notif-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #ff4fa8;
+      color: white;
+      font-size: 0.65rem;
+      border-radius: 50%;
+      padding: 2px 5px;
+      font-weight: bold;
+      pointer-events: none;
+      box-shadow: 0 0 8px rgba(255, 79, 168, 0.6);
+    }
+
+    .menu-panel {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      min-width: 180px;
+      padding: 8px;
+      border-radius: 16px;
+      background: rgba(20, 11, 24, 0.96);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: opacity 180ms ease, transform 180ms ease;
+      z-index: 60;
+    }
+    .menu-panel.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .menu-panel button {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      margin: 4px 0;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .notif-panel {
+      min-width: 260px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .notif-item {
+      font-size: 0.8rem;
+      padding: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      line-height: 1.4;
+    }
+    .notif-item:last-child {
+      border-bottom: none;
+    }
+    .notif-date {
+      color: #ff4fa8;
+      font-weight: 800;
+      margin-bottom: 4px;
+      font-size: 0.75rem;
+    }
+
+    .page {
+      width: min(1440px, 96%);
+      margin: 14px auto 26px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero {
+      padding: 16px;
+      overflow: hidden;
+    }
+    .hero-head {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+      margin-bottom: 14px;
+    }
+
+    .love-quote-box,
+    .quran-box {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.11);
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .love-quote-text {
+      margin: 0;
+      font-family: "Great Vibes", cursive;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      line-height: 1.4;
+      color: #fff7fb;
+      text-align: center;
+    }
+    .love-quote-author {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .quran-box h3 {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+    }
+    .quran-ref {
+      font-weight: 800;
+      font-size: 0.86rem;
+      margin: 0 0 8px;
+    }
+    .quran-fi,
+    .quran-tr {
+      font-size: 0.84rem;
+      line-height: 1.62;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* --- NEWS SECTION STYLES --- */
+    .news-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .news-box {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .news-box h3 {
+      margin: 0 0 12px 0;
+      font-size: 0.95rem;
+      color: #ffdceb;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .news-item {
+      font-size: 0.8rem;
+      line-height: 1.4;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .news-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .news-item a {
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 500;
+    }
+    .news-item a:hover {
+      color: #ff4fa8;
+    }
+    .news-date {
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 4px;
+      font-style: italic;
+    }
+    .news-box::-webkit-scrollbar { width: 4px; }
+    .news-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+    /* --- MOOD BOARD STYLES --- */
+    .mood-board-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .mood-board {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .mood-board h3 {
+      margin: 0 0 12px 0;
+      font-size: 0.95rem;
+      text-align: center;
+      color: #ffdceb;
+      letter-spacing: 0.02em;
+    }
+    .mood-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .mood-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mood-btn:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .mood-btn.active {
+      background: rgba(255, 79, 168, 0.25);
+      border-color: rgba(255, 79, 168, 0.6);
+      box-shadow: 0 0 10px rgba(255, 79, 168, 0.4);
+      color: #fff;
+    }
+
+    .slider-wrap {
+      position: relative;
+      min-height: 520px;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+    }
+    .slides {
+      position: relative;
+      min-height: 520px;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform: scale(1.04);
+      transition: opacity 900ms ease, transform 900ms ease;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: scale(1);
+      z-index: 2;
+    }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      object-fit: cover;
+      display: block;
+    }
+    .slider-nav {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      display: flex;
+      gap: 8px;
+      z-index: 4;
+    }
+    .slider-nav button {
+      width: 44px;
+      height: 44px;
+      font-size: 1rem;
+    }
+    .slider-dots {
+      position: absolute;
+      left: 14px;
+      bottom: 20px;
+      display: flex;
+      gap: 8px;
+      z-index: 4;
+    }
+    .slider-dots button {
+      width: 11px;
+      height: 11px;
+      padding: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.26);
+    }
+    .slider-dots button.active {
+      background: #fff;
+      transform: scale(1.1);
+    }
+
+    /* --- HORIZONTAL MOVIES GALLERY --- */
+    .movies-section {
+      padding: 16px;
+      margin-top: 18px;
+      position: relative;
+    }
+    .movies-header h3 {
+      margin: 0 0 12px 0;
+      font-size: 1.1rem;
+      letter-spacing: 0.03em;
+    }
+    .movies-carousel-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .movies-track {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      gap: 16px;
+      padding: 4px 0;
+      width: 100%;
+      scrollbar-width: none;
+    }
+    .movies-track::-webkit-scrollbar {
+      display: none;
+    }
+    .movie-thumb {
+      flex: 0 0 180px;
+      scroll-snap-align: start;
+      position: relative;
+      aspect-ratio: 2/3;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .movie-thumb:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,79,168,0.6);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+    .movie-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(0,0,0,0.15);
+      transition: background 0.2s;
+    }
+    .movie-thumb:hover .play-overlay {
+      background: rgba(0,0,0,0.3);
+    }
+    .carousel-btn {
+      position: absolute;
+      z-index: 10;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+      backdrop-filter: blur(4px);
+    }
+    .carousel-btn.prev { left: -10px; }
+    .carousel-btn.next { right: -10px; }
+
+    /* --- IG STYLE REELS THUMBNAIL GRID --- */
+    .reels-section {
+      padding: 16px;
+      margin-top: 18px;
+    }
+    .reels-header h3 {
+      margin: 0 0 12px 0;
+      font-size: 1.1rem;
+      letter-spacing: 0.03em;
+    }
+    .reels-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 14px;
+      width: 100%;
+    }
+    .reel-thumb {
+      width: 100%;
+      aspect-ratio: 9/16;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #100814;
+      position: relative;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .reel-thumb video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    /* --- FULL SCREEN VIDEO MODAL (Used for Reels & Movies) --- */
+    .reels-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .reels-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .reel-close-btn {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      z-index: 100000;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      backdrop-filter: blur(5px);
+    }
+    .reels-modal-container {
+      position: absolute;
+      inset: 0;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .reels-modal-container::-webkit-scrollbar {
+      display: none;
+    }
+    .reel-full {
+      height: 100dvh;
+      width: 100vw;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      position: relative;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .reel-full video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #000;
+    }
+    .single-movie-container {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+    }
+    .single-movie-container video {
+      width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .calendar-pop {
+      position: fixed;
+      right: 2%;
+      top: 64px;
+      width: min(440px, 96vw);
+      z-index: 70;
+      padding: 12px;
+      border-radius: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-10px) scale(0.98);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+    .calendar-pop.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+    .calendar-photo-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .calendar-mini-avatar {
+      position: relative;
+      overflow: hidden;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.14);
+      aspect-ratio: 1 / 1;
+      background: rgba(255,255,255,0.08);
+      isolation: isolate;
+    }
+    .calendar-mini-avatar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at center, transparent 58%, rgba(16, 8, 20, 0.12) 76%, rgba(16, 8, 20, 0.32) 100%);
+      z-index: 2;
+    }
+    .calendar-mini-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 50%;
+    }
+    .calendar-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 10px;
+      margin-bottom: 8px;
+      margin-top: 12px;
+    }
+    .calendar-head h3 {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+    .calendar-head p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.74rem;
+    }
+    .calendar-nav {
+      display: flex;
+      gap: 6px;
+    }
+    .calendar-nav button {
+      width: 32px;
+      height: 32px;
+      font-size: 0.84rem;
+      padding: 0;
+    }
+    .weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 5px;
+    }
+    .weekday {
+      text-align: center;
+      font-size: 0.65rem;
+      color: var(--muted);
+      padding: 2px 0;
+      font-weight: 700;
+    }
+    .day {
+      min-height: 34px;
+      border-radius: 9px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+      padding: 0;
+    }
+    .day:hover { background: rgba(255,255,255,0.14); }
+    .day.empty { background: transparent; border-color: transparent; cursor: default; }
+    .day.today { box-shadow: 0 0 0 1px rgba(255,255,255,0.32) inset; }
+
+    .day.has-note::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 0 10px rgba(255,255,255,0.95);
+      animation: notePulse 2.2s ease-in-out infinite;
+    }
+
+    .notes-list {
+      margin-top: 10px;
+      display: grid;
+      gap: 6px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 3px;
+      scroll-behavior: smooth;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+    .note-row {
+      display: grid;
+      grid-template-columns: 46px 1fr;
+      gap: 6px;
+      align-items: start;
+    }
+    .note-row-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      padding-top: 7px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .note-row-preview {
+      width: 100%;
+      min-height: 42px;
+      border-radius: 10px;
+      padding: 10px 11px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      font-size: 0.74rem;
+      line-height: 1.45;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .note-row-preview.empty {
+      color: rgba(255,255,255,0.55);
+    }
+
+    .note-modal,
+    .book-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 85;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(8, 5, 11, 0.78);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+    .book-modal {
+      z-index: 80;
+      align-items: start;
+      overflow-y: auto;
+    }
+    .note-modal.open,
+    .book-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .note-box {
+      width: min(760px, 96vw);
+      border-radius: 24px;
+      padding: 16px;
+      background: linear-gradient(180deg, rgba(31,21,36,0.98), rgba(18,12,22,0.99));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: var(--shadow);
+    }
+    .note-box h3 {
+      margin: 0 0 10px;
+    }
+    .note-box textarea {
+      width: 100%;
+      min-height: 280px;
+      resize: vertical;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 14px;
+      font: inherit;
+      line-height: 1.5;
+      outline: none;
+    }
+
+    /* YELLOW STICKY NOTE STYLES */
+    .yellow-paper {
+      background: #fff8b0 !important;
+      color: #333 !important;
+      font-family: "Cormorant Garamond", cursive, serif !important;
+      border: 1px solid #e6db5a !important;
+      box-shadow: 2px 4px 15px rgba(0,0,0,0.4) !important;
+    }
+    .yellow-paper h3 {
+      color: #333;
+      margin-bottom: 12px;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      padding-bottom: 8px;
+    }
+    .yellow-paper textarea {
+      background: transparent !important;
+      color: #222 !important;
+      border: 1px solid rgba(0,0,0,0.1) !important;
+      background-image: repeating-linear-gradient(transparent, transparent 24px, rgba(0,0,0,0.05) 24px, rgba(0,0,0,0.05) 25px) !important;
+      line-height: 25px !important;
+      font-size: 1.1rem !important;
+    }
+    .yellow-paper .note-actions button {
+      background: rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.1);
+      color: #333;
+      font-weight: bold;
+    }
+    .yellow-paper .note-actions button:hover {
+      background: rgba(0,0,0,0.1);
+    }
+
+    .note-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .book-shell {
+      width: min(1260px, 98vw);
+      margin: 8px auto;
+      padding: 16px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(28,18,34,0.98), rgba(18,12,22,0.99));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: var(--shadow);
+      max-height: calc(100vh - 16px);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .book-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .book-top h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-family: "Cinzel", serif;
+      letter-spacing: 0.04em;
+    }
+    .book-sub {
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 0.82rem;
+    }
+    .book-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .book-tabs button {
+      padding: 8px 11px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .book-tabs button.active {
+      background: linear-gradient(135deg, rgba(255,100,171,0.48), rgba(255,255,255,0.14));
+    }
+    .book-stage {
+      position: relative;
+      min-height: 760px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 8px 0 0;
+    }
+    .book-turn-wrap {
+      position: relative;
+      width: calc(var(--book-base-width) * 1px);
+      min-width: calc(var(--book-base-width) * 1px);
+      transform-origin: top center;
+      transform-style: preserve-3d;
+      transition: transform 180ms ease;
+      will-change: transform;
+    }
+    .book-visual {
+      position: relative;
+      width: 100%;
+      height: calc(var(--book-base-height) * 1px);
+      border-radius: 30px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)),
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05), transparent 28%);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.06),
+        0 30px 60px rgba(0,0,0,0.26);
+    }
+    .book-cover {
+      position: absolute;
+      inset: 0;
+      border-radius: 30px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.08), transparent 24%),
+        linear-gradient(135deg, var(--cover-a), var(--cover-b) 50%, var(--cover-c));
+      border: 1px solid rgba(0,0,0,0.28);
+      box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,0.06),
+        inset 0 0 40px rgba(0,0,0,0.18);
+    }
+    .book-cover::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 24px;
+      border: 2px solid rgba(255,195,230,0.28);
+      pointer-events: none;
+    }
+    .book-spine {
+      position: absolute;
+      top: 30px;
+      bottom: 30px;
+      left: 50%;
+      width: 22px;
+      transform: translateX(-50%);
+      border-radius: 12px;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.18), rgba(255,255,255,0.1), rgba(0,0,0,0.18)),
+        linear-gradient(180deg, #cf67d8, #5466dd);
+      z-index: 1;
+    }
+    .book-pages-base {
+      position: absolute;
+      inset: 30px 34px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      z-index: 2;
+    }
+    .page-paper {
+      position: relative;
+      min-height: 610px;
+      border-radius: 18px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.03)),
+        linear-gradient(135deg, var(--paper-1), var(--paper-2));
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.16),
+        0 8px 18px rgba(0,0,0,0.18);
+      padding: 20px 20px 28px;
+    }
+    .page-paper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          transparent 0,
+          transparent 24px,
+          rgba(92,66,43,0.055) 24px,
+          rgba(92,66,43,0.055) 25px
+        );
+      pointer-events: none;
+      opacity: 0.75;
+    }
+    .page-paper.left::after,
+    .page-paper.right::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 28px;
+      pointer-events: none;
+      opacity: 0.78;
+      z-index: 3;
+    }
+    .page-paper.left::after {
+      right: 0;
+      background: linear-gradient(90deg, transparent, rgba(87,58,40,0.16) 55%, rgba(87,58,40,0.34));
+      transform: skewY(-6deg);
+    }
+    .page-paper.right::after {
+      left: 0;
+      background: linear-gradient(270deg, transparent, rgba(87,58,40,0.16) 55%, rgba(87,58,40,0.34));
+      transform: skewY(6deg);
+    }
+    .page-content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+    }
+    .page-title {
+      text-align: center;
+      color: #73523b;
+      font-family: "Cinzel", serif;
+      font-size: 0.88rem;
+      letter-spacing: 0.03em;
+      margin-bottom: 8px;
+      user-select: none;
+    }
+    .page-editor {
+      width: 100%;
+      height: var(--book-text-height);
+      border: 0;
+      outline: none;
+      resize: none;
+      background: transparent;
+      color: var(--ink);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: var(--book-font-size);
+      line-height: var(--book-line-height);
+      letter-spacing: 0.01em;
+      overflow-y: hidden;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      padding: 2px 6px;
+      tab-size: 2;
+      background-image:
+        linear-gradient(transparent 24px, rgba(92,66,43,0.06) 24px, rgba(92,66,43,0.06) 25px);
+      background-size: 100% 25px;
+      background-position-y: 2px;
+    }
+    .page-editor::-webkit-scrollbar {
+      width: 8px;
+    }
+    .page-editor::-webkit-scrollbar-thumb {
+      background: rgba(87,58,40,0.18);
+      border-radius: 999px;
+    }
+    .page-number {
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: "Cinzel", serif;
+      color: #7c5940;
+      font-size: 0.82rem;
+      user-select: none;
+      z-index: 2;
+    }
+    .page-turn-zone {
+      position: absolute;
+      bottom: -28px;
+      width: 70px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      color: rgba(87, 58, 40, 0.45);
+      font-size: 1.4rem;
+      transition: color 0.2s, background 0.2s;
+    }
+    .page-turn-zone:hover {
+      color: rgba(87, 58, 40, 0.95);
+      background: rgba(87, 58, 40, 0.08);
+    }
+    .page-turn-zone.prev-zone {
+      left: -20px;
+      border-top-right-radius: 20px;
+      border-bottom-left-radius: 18px;
+    }
+    .page-turn-zone.next-zone {
+      right: -20px;
+      border-top-left-radius: 20px;
+      border-bottom-right-radius: 18px;
+    }
+    .book-flip-sheet {
+      position: absolute;
+      top: 30px;
+      width: calc(50% - 45px);
+      height: 610px;
+      border-radius: 18px;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 10;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.42), rgba(255,255,255,0.06)),
+        linear-gradient(135deg, var(--paper-1), var(--paper-2));
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.14),
+        inset -18px 0 24px rgba(87,58,40,0.12),
+        0 16px 28px rgba(0,0,0,0.28);
+    }
+    .book-flip-sheet::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        repeating-linear-gradient(
+          transparent 0,
+          transparent 24px,
+          rgba(92,66,43,0.04) 24px,
+          rgba(92,66,43,0.04) 25px
+        );
+    }
+    .book-flip-sheet.next {
+      right: 34px;
+      transform-origin: left center;
+    }
+    .book-flip-sheet.prev {
+      left: 34px;
+      transform-origin: right center;
+    }
+    .book-flip-sheet.next.animate {
+      opacity: 1;
+      animation: flipNext 900ms ease forwards;
+    }
+    .book-flip-sheet.prev.animate {
+      opacity: 1;
+      animation: flipPrev 900ms ease forwards;
+    }
+    .book-controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .book-controls button {
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .book-controls button[disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .book-measurer {
+      position: fixed;
+      left: -99999px;
+      top: 0;
+      padding: 2px 6px;
+      box-sizing: border-box;
+      visibility: hidden;
+      pointer-events: none;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      word-break: break-word;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: var(--book-font-size);
+      line-height: var(--book-line-height);
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      tab-size: 2;
+    }
+
+    audio { display: none; }
+
+    @keyframes notePulse {
+      0%, 100% { opacity: 0.35; transform: translateX(-50%) scale(0.9); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.22); }
+    }
+    @keyframes flipNext {
+      0% { opacity: 0; transform: perspective(1800px) rotateY(0deg) rotateX(0deg); }
+      10% { opacity: 1; }
+      50% { opacity: 1; transform: perspective(1800px) rotateY(-85deg) rotateX(4deg); }
+      100% { opacity: 0; transform: perspective(1800px) rotateY(-175deg) rotateX(0deg); }
+    }
+    @keyframes flipPrev {
+      0% { opacity: 0; transform: perspective(1800px) rotateY(0deg) rotateX(0deg); }
+      10% { opacity: 1; }
+      50% { opacity: 1; transform: perspective(1800px) rotateY(85deg) rotateX(-4deg); }
+      100% { opacity: 0; transform: perspective(1800px) rotateY(175deg) rotateX(0deg); }
+    }
+
+    @media (max-width: 1120px) {
+      .hero-head {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 980px) {
+      .control-row {
+        justify-content: center;
+      }
+      .slider-wrap,
+      .slides,
+      .slide img {
+        min-height: 360px;
+      }
+    }
+    @media (max-width: 760px) {
+      :root {
+        --book-font-size: 12px;
+        --book-line-height: 21px;
+        --book-text-height: 525px; 
+        --book-base-width: 940;
+        --book-base-height: 670;
+      }
+      .book-shell {
+        padding: 12px;
+        max-height: calc(100vh - 10px);
+      }
+      .book-stage {
+        min-height: 540px;
+      }
+      .date-chip, .pray-chip { min-width: 100%; }
+      .book-tabs { width: 100%; }
+      .calendar-pop { right: 2vw; left: 2vw; width: auto; }
+      .mood-board-container,
+      .news-section {
+        grid-template-columns: 1fr; 
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="loveAudio" preload="auto"></audio>
+
+  <header class="glass main-topbar">
+    
+    <div class="header-row">
+      <div class="date-chip" id="todayLabel">Today</div>
+      <div class="pray-chip" id="prayTimesChip">🕌 Kouvola Prayer Times: Loading...</div>
+    </div>
+
+    <div class="control-row">
+      <div class="weather-mini-wrap">
+        <div class="weather-chip" id="weather-adana">
+          <div class="weather-icon" data-icon>⏳</div>
+          <div class="weather-info">
+            <div class="weather-city">Adana</div>
+            <div class="weather-temp" data-temp>--°</div>
+          </div>
+        </div>
+        <div class="weather-chip" id="weather-kouvola">
+          <div class="weather-icon" data-icon>⏳</div>
+          <div class="weather-info">
+            <div class="weather-city">Kouvola</div>
+            <div class="weather-temp" data-temp>--°</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="top-actions-row">
+        <div id="countdownDisplay" class="countdown-chip" style="display: none;">
+          <span id="countdownText">✈️🇹🇷 0 days left</span>
+          <button id="countdownResetBtn" aria-label="Reset countdown">✕</button>
+        </div>
+        <button id="quickNoteBtn" class="yellow-note-btn" type="button">
+          <span>📝</span> Note
+        </button>
+      </div>
+    </div>
+
+    <div class="header-row">
+      <div class="couple-mini">
+        <div class="couple-avatar">
+          <img id="portrait1" src="couple images/john.jpg" alt="John photo" />
+        </div>
+        <div class="couple-text">
+          <h1>John ❤️ Verna</h1>
+        </div>
+        <div class="couple-avatar">
+          <img id="portrait2" src="couple images/verna.jpg" alt="Verna photo" />
+        </div>
+      </div>
+    </div>
+
+    <div class="header-row">
+      <div class="food-chip">
+        <svg viewBox="0 0 24 24" class="food-icon" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C7.03 2 3 6.03 3 11V12H21V11C21 6.03 16.97 2 12 2ZM12 4C15.86 4 19 7.14 19 11H5C5 7.14 8.14 4 12 4ZM2 13V15H22V13H2Z"/>
+        </svg>
+        <div class="food-info">
+          <div class="food-title">Daily Food Recommendations</div>
+          <div class="food-name" id="dailyFoodText">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-row">
+      <button class="play-icon-btn" id="openMusicBtn" aria-label="Play music" type="button">▶</button>
+      <button class="tiny-btn" id="calendarToggleBtn" type="button">Avaa kalenteri</button>
+
+      <div style="position:relative;">
+        <button class="icon-btn" id="menuToggleBtn" aria-label="Open menu" type="button">☰</button>
+        <div class="menu-panel" id="menuPanel">
+          <button id="menuOpenBookBtn" type="button">Our Love Book</button>
+          <button id="menuOpenDreamBookBtn" type="button">Our Dream Book</button>
+          <button id="menuCountdownBtn" type="button">+ Edit Countdown</button>
+          <button id="menuCloseBtn" type="button">Close menu</button>
+        </div>
+      </div>
+
+      <div style="position:relative;">
+        <button class="icon-btn" id="notifToggleBtn" aria-label="Notifications" type="button">
+          🔔<span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+        </button>
+        <div class="menu-panel notif-panel" id="notifPanel">
+          <div id="notifList">Ei tulevia tapahtumia (No upcoming events)</div>
+        </div>
+      </div>
+    </div>
+    
+  </header>
+
+  <main class="page">
+    <section class="glass hero">
+      <div class="hero-head">
+        <div class="love-quote-box">
+          <p class="love-quote-text" id="dailyLoveQuote">Loading daily love quote...</p>
+          <div class="love-quote-author" id="dailyLoveAuthor"></div>
+        </div>
+
+        <aside class="quran-box">
+          <h3>Quran Quote</h3>
+          <div class="quran-ref" id="dailyQuranRef">Loading...</div>
+          <div class="quran-fi" id="dailyQuranFi"></div> 
+          <div class="quran-tr" id="dailyQuranTr"></div>
+        </aside>
+      </div>
+
+      <div class="news-section">
+        <div class="news-box">
+          <h3>🇫🇮 Yle Uutiset</h3>
+          <div class="news-list" id="yleNewsList">Loading news...</div>
+        </div>
+        <div class="news-box">
+          <h3>🇹🇷 NTV Haber (Son Dakika)</h3>
+          <div class="news-list" id="turkishNewsList">Haberler yükleniyor...</div>
+        </div>
+      </div>
+
+      <div class="mood-board-container">
+        <div class="mood-board">
+          <h3>John's Daily Mood</h3>
+          <div class="mood-grid" id="moodGridJohn"></div>
+        </div>
+        <div class="mood-board">
+          <h3>Verna's Daily Mood</h3>
+          <div class="mood-grid" id="moodGridVerna"></div>
+        </div>
+      </div>
+
+      <div class="slider-wrap">
+        <div class="slides" id="slides"></div>
+        <div class="slider-dots" id="sliderDots"></div>
+        <div class="slider-nav">
+          <button id="prevSlideBtn" aria-label="Previous slide" type="button">←</button>
+          <button id="nextSlideBtn" aria-label="Next slide" type="button">→</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="glass movies-section">
+      <div class="movies-header">
+        <h3>Movies to Watch 🍿</h3>
+      </div>
+      <div class="movies-carousel-wrapper">
+        <button class="carousel-btn prev" id="moviesPrevBtn">&lt;</button>
+        
+        <div class="movies-track" id="moviesTrack">
+           <div class="movie-thumb" onclick="openMovie('movies/movie1.mp4')">
+              <img src="movies/cover1.jpg" alt="Movie 1" onerror="this.src='https://via.placeholder.com/300x450/241028/ff4fa8?text=Movie+1'">
+              <div class="play-overlay">
+                 <svg width="40" height="40" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
+                    <path d="M8 5v14l11-7z"/>
+                 </svg>
+              </div>
+           </div>
+           <div class="movie-thumb" onclick="openMovie('movies/movie2.mp4')">
+              <img src="movies/cover2.jpg" alt="Movie 2" onerror="this.src='https://via.placeholder.com/300x450/241028/ff4fa8?text=Movie+2'">
+              <div class="play-overlay">
+                 <svg width="40" height="40" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
+                    <path d="M8 5v14l11-7z"/>
+                 </svg>
+              </div>
+           </div>
+           <div class="movie-thumb" onclick="openMovie('movies/movie3.mp4')">
+              <img src="movies/cover3.jpg" alt="Movie 3" onerror="this.src='https://via.placeholder.com/300x450/241028/ff4fa8?text=Movie+3'">
+              <div class="play-overlay">
+                 <svg width="40" height="40" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
+                    <path d="M8 5v14l11-7z"/>
+                 </svg>
+              </div>
+           </div>
+           <div class="movie-thumb" onclick="openMovie('movies/movie4.mp4')">
+              <img src="movies/cover4.jpg" alt="Movie 4" onerror="this.src='https://via.placeholder.com/300x450/241028/ff4fa8?text=Movie+4'">
+              <div class="play-overlay">
+                 <svg width="40" height="40" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
+                    <path d="M8 5v14l11-7z"/>
+                 </svg>
+              </div>
+           </div>
+           <div class="movie-thumb" onclick="openMovie('movies/movie5.mp4')">
+              <img src="movies/cover5.jpg" alt="Movie 5" onerror="this.src='https://via.placeholder.com/300x450/241028/ff4fa8?text=Movie+5'">
+              <div class="play-overlay">
+                 <svg width="40" height="40" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
+                    <path d="M8 5v14l11-7z"/>
+                 </svg>
+              </div>
+           </div>
+        </div>
+
+        <button class="carousel-btn next" id="moviesNextBtn">&gt;</button>
+      </div>
+    </section>
+
+    <section class="glass reels-section">
+      <div class="reels-header">
+        <h3>Our Reels</h3>
+      </div>
+      <div class="reels-container" id="reelsThumbContainer">
+      </div>
+    </section>
+  </main>
+
+  <div id="reelsModal" class="reels-modal">
+    <button id="closeReelsBtn" class="reel-close-btn">✕</button>
+    <div id="reelsModalContainer" class="reels-modal-container">
+      </div>
+  </div>
+
+  <div id="movieModal" class="reels-modal">
+    <button id="closeMovieBtn" class="reel-close-btn">✕</button>
+    <div class="single-movie-container">
+       <video id="singleMoviePlayer" controls playsinline preload="auto"></video>
+    </div>
+  </div>
+
+  <section class="glass calendar-pop" id="calendarPop">
+    <div class="calendar-photo-row">
+      <div class="calendar-mini-avatar">
+        <img id="calendarImg1" src="calendar images/calendar1.jpg" alt="Calendar image 1" />
+      </div>
+      <div class="calendar-mini-avatar">
+        <img id="calendarImg2" src="calendar images/calendar2.jpg" alt="Calendar image 2" />
+      </div>
+    </div>
+
+    <div class="calendar-head">
+      <div>
+        <h3 id="calendarTitle">Kalenteri</h3>
+        <p>Muistiinpanot päiville</p>
+      </div>
+
+      <div class="calendar-nav">
+        <button id="prevMonthBtn" aria-label="Edellinen kuukausi" type="button">←</button>
+        <button id="nextMonthBtn" aria-label="Seuraava kuukausi" type="button">→</button>
+        <button id="closeCalendarBtn" aria-label="Sulje" type="button">✕</button>
+      </div>
+    </div>
+
+    <div class="weekdays" id="weekdayRow"></div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+    <div class="notes-list" id="notesList"></div>
+  </section>
+
+  <div class="note-modal" id="quickNoteModal">
+    <div class="note-box yellow-paper">
+      <h3>📝 Quick Sticky Note</h3>
+      <textarea id="quickNoteTextarea" spellcheck="false" placeholder="Write your quick notes here..."></textarea>
+      <div class="note-actions">
+        <button id="quickNoteCloseBtn" class="tiny-btn" type="button">Save & Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-modal" id="countdownModal">
+    <div class="note-box" style="text-align: center;">
+      <h3>Select Countdown Date</h3>
+      <input type="date" id="countdownDateInput" style="padding: 10px; border-radius: 8px; margin: 15px 0; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); width: 80%; color-scheme: dark;">
+      <div class="note-actions" style="justify-content: center;">
+        <button id="saveCountdownBtn" class="tiny-btn">Start Countdown</button>
+        <button id="closeCountdownBtn" class="tiny-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-modal" id="noteModal">
+    <div class="note-box">
+      <h3 id="noteModalTitle">Muistiinpano</h3>
+      <textarea id="noteModalTextarea" spellcheck="false"></textarea>
+      <div class="note-actions">
+        <button id="noteCloseBtn" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="book-modal" id="bookModal">
+    <div class="book-shell">
+      <div class="book-top">
+        <div>
+          <h3 id="bookMainTitle">Our Love Book</h3>
+          <div class="book-sub">Two pages stay visible together. Book is centered and scaled to fit the screen.</div>
+        </div>
+
+        <div class="book-tabs" id="bookTabsContainer">
+          <button class="active" id="bookTabJohn" type="button">John</button>
+          <button id="bookTabVerna" type="button">Verna</button>
+          <button id="closeBookBtn" type="button">Close</button>
+        </div>
+        
+        <button id="closeBookBtnSecondary" type="button" style="display:none; padding: 8px 11px; font-size: 0.8rem; font-weight: 700; border-radius: 12px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.15); color: #fff; cursor: pointer;">Close</button>
+
+      </div>
+
+      <div class="book-stage" id="bookStage">
+        <div class="book-turn-wrap" id="bookTurnWrap">
+          <div class="book-visual" id="bookVisual">
+            <div class="book-cover"></div>
+            <div class="book-spine"></div>
+
+            <div class="book-pages-base">
+              <div class="page-paper left">
+                <div class="page-content">
+                  <div class="page-title" id="leftPageTitle">John — Page 1</div>
+                  <textarea class="page-editor" id="leftPageTextarea" spellcheck="false" placeholder="Write here..."></textarea>
+                  <div class="page-number" id="leftPageNumber">1</div>
+                  <div class="page-turn-zone prev-zone" id="prevPageZone" title="Previous page">
+                    <span>&larr;</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="page-paper right">
+                <div class="page-content">
+                  <div class="page-title" id="rightPageTitle">John — Page 2</div>
+                  <textarea class="page-editor" id="rightPageTextarea" spellcheck="false" placeholder="Continue here..."></textarea>
+                  <div class="page-number" id="rightPageNumber">2</div>
+                  <div class="page-turn-zone next-zone" id="nextPageZone" title="Next page">
+                    <span>&rarr;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="book-flip-sheet next" id="flipNextSheet"></div>
+            <div class="book-flip-sheet prev" id="flipPrevSheet"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="book-controls">
+        <button id="prevBookPagesBtn" type="button">← Previous pages</button>
+        <button id="nextBookPagesBtn" type="button">Next pages →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="book-measurer" id="bookMeasurer"></div>
+
+  <script>
+    const STORAGE_KEYS = {
+      month: "love_current_month_v26",
+      notes: "love_notes_v26",
+      loveQuoteCache: "love_quote_cache_v26",
+      quranCache: "quran_cache_v26_fixed"
+    };
+
+    const DB_NAME = "love_app_v26";
+    const DB_VERSION = 1;
+    const BOOK_STORE = "bookPages";
+
+    const config = {
+      totalGalleryImages: 50, 
+      totalReels: 5,
+      musicFiles: [
+        "music/1.mp3",
+        "music/2.mp3",
+        "music/3.mp3",
+        "music/4.mp3",
+        "music/5.mp3"
+      ],
+      weatherLocations: [
+        { id: "weather-adana", latitude: 37.0, longitude: 35.3213 },
+        { id: "weather-kouvola", latitude: 60.8679, longitude: 26.7042 }
+      ],
+      sliderDelayMs: 4500
+    };
+
+    config.sliderImages = Array.from({length: config.totalGalleryImages}, (_, i) => ({ src: `gallery/${i+1}.jpg` }));
+
+    const weatherIcons = {
+      0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️",
+      45: "🌫️", 48: "🌫️",
+      51: "🌦️", 53: "🌦️", 55: "🌧️",
+      56: "🌧️", 57: "🌧️",
+      61: "🌧️", 63: "🌧️", 65: "🌧️",
+      66: "🌧️", 67: "🌧️",
+      71: "🌨️", 73: "🌨️", 75: "❄️", 77: "❄️",
+      80: "🌦️", 81: "🌧️", 82: "⛈️",
+      85: "🌨️", 86: "❄️",
+      95: "⛈️", 96: "⛈️", 99: "⛈️"
+    };
+
+    const monthsFi = [
+      "tammikuu", "helmikuu", "maaliskuu", "huhtikuu", "toukokuu", "kesäkuu",
+      "heinäkuu", "elokuu", "syyskuu", "lokakuu", "marraskuu", "joulukuu"
+    ];
+
+    const weekdaysFi = ["Ma", "Ti", "Ke", "To", "Pe", "La", "Su"];
+
+    const foodList = [
+      "Meatballs with rice and freh potatoes", "Meatballs with vegetables in the oven",
+      "Oven-baked vegetables", "Oven-baked wings", "Chicken fajitas", "Meat fajitas",
+      "Tomato pasta", "Yogurt pasta", "Pepper paste pasta", "Tavuk Dünyası-style pasta",
+      "Mozzarella pasta", "Sigara börek with potato or cheese", "Homemade pizza",
+      "Garlic bulgur köfte", "Çiğ köfte", "Nachos with cheese and meat", "Tacos with meat",
+      "Fresh potato fries with vegetables", "Tomato soup with small pasta",
+      "Döner wrap with tortilla", "Kebab wrap", "Steak with garlic oil", "Kısır bulgur",
+      "Sarma / Dolma — stuffed rice vegetables with paprika or eggplant 🍆",
+      "Spinach börek", "Toast", "McDonald’s", "Hesburger", "Kebab with rice and salad",
+      "Tortilla with meat or chicken", "Makaronilaatikko", "Potato salad / some soup",
+      "Homemade burger", "Schnitzel", "Chicken breast with vegetables in the oven",
+      "Pide with cheese", "Lahmacun", "Breakfast day / Brunch day", "Homemade İskender",
+      "Tantuni", "Cheese plate night / Garlic tortilla pizza"
+    ];
+
+    const baseQuranVerses = [
+      { ref: "Ar-Rum 30:21", tr: "Kendileriyle huzur bulasınız diye size kendi cinsinizden eşler yaratması ve aranıza sevgi ve merhamet koyması O'nun ayetlerindendir.", fi: "Ja Hänen merkkejään on se, että Hän loi teille puolisot teistä itsestänne, jotta löytäisitte rauhan heidän luonaan, ja asetti välillenne rakkauden ja laupeuden." },
+      { ref: "Al-Baqarah 2:187", tr: "Onlar sizin için birer elbise, siz de onlar için birer elbisesiniz.", fi: "He ovat teille vaate ja te olette heille vaate." },
+      { ref: "Al-Furqan 25:74", tr: "Rabbimiz! Bize gözümüzü aydınlatacak eşler ve zürriyetler bağışla...", fi: "Herramme, suo meille puolisoistamme ja jälkeläisistämme silmiemme ilo..." },
+      { ref: "Al-A'raf 7:189", tr: "Sizi tek bir nefisten yaratan ve onunla huzur bulsun diye eşini de ondan var eden O'dur.", fi: "Hän loi teidät yhdestä sielusta ja loi siitä sen puolison, jotta tämä löytäisi levon hänen luonaan." },
+      { ref: "An-Nahl 16:72", tr: "Allah size kendi nefislerinizden eşler yarattı, eşlerinizden de sizin için oğullar ve torunlar yarattı.", fi: "Jumala on antanut teille puolisot omasta joukostanne ja suonut teille puolisoistanne lapsia ve lastenlapsia." },
+      { ref: "An-Nisa 4:1", tr: "Sizi bir tek candan yaratan, ondan da eşini yaratan ve ikisinden birçok erkek ve kadın üretip yayan Rabbinizden sakının.", fi: "Kunnioittakaa Herraanne, joka loi teidät yhdestä sielusta ja loi siitä sille puolison, ja levitti näistä kahdesta paljon miehiä ja naisia." },
+      { ref: "Al-Hujurat 49:13", tr: "Ey insanlar! Şüphe yok ki, biz sizi bir erkek ve bir dişiden yarattık...", fi: "Ihmiset! Olemme todella luoneet teidät miehestä ja naisesta..." },
+      { ref: "Ya-Sin 36:36", tr: "Yerin bitirdiklerinden, kendi nefislerinden ve daha bilmedikleri şeylerden bütün çiftleri yaratan Allah'ın şanı yücedir.", fi: "Kunnia olkoon Hänelle, joka loi kaikki parit siitä, mitä maa kasvattaa, heistä itsestään ja siitä, mitä he eivät tiedä." },
+      { ref: "Adh-Dhariyat 51:49", tr: "Düşünüp ibret alasınız diye her şeyden çiftler yarattık.", fi: "Ja kaikkea olemme luoneet pareittain, jotta te muistaisitte." },
+      { ref: "An-Naba 78:8", tr: "Sizi çift çift yarattık.", fi: "Ja Me loimme teidät pareittain." },
+      { ref: "Ash-Shura 42:11", tr: "O, göklerin ve yerin yaratıcısıdır. Size kendi nefislerinizden eşler var etmiştir.", fi: "Taivaiden ja maan Luoja; Hän on tehnyt teille teistä itsestänne puolisot." },
+      { ref: "Fatir 35:11", tr: "Allah sizi topraktan, sonra nutfeden yarattı, sonra da sizi çiftler kıldı.", fi: "Jumala loi teidät tomusta, sitten pisarasta, sitten Hän teki teistä pareja." },
+      { ref: "Taha 20:118", tr: "Şüphesiz senin için orada acıkmak ve çıplak kalmak yoktur.", fi: "Totisesti, et näe siellä nälkää etkä ole alasti." },
+      { ref: "Al-Qasas 28:24", tr: "Rabbim! Doğrusu bana indireceğin her hayra muhtacım.", fi: "Herramme! Olen todella tarpeessa mihin tahansa hyvään, jonka minulle lähetät." },
+      { ref: "Al-Ahzab 33:35", tr: "Şüphesiz müslüman erkekler ve müslüman kadınlar, mümin erkekler ve mümin kadınlar... Allah onlar için bir bağışlanma ve büyük bir mükafat hazırlamıştır.", fi: "Totisesti, muslimimiehille ja musliminaisille, uskoville miehille ja uskoville naisille... Jumala on valmistanut anteeksiannon ja suuren palkan." }
+    ];
+
+    const specialQuranVerses = Array.from({length: 365}, (_, i) => baseQuranVerses[i % baseQuranVerses.length]);
+
+    const loveQuotes = [
+      { quote: "Love is not only what we feel. It is what we choose with patience, tenderness, and loyalty every day.", author: "Daily Love Notes" },
+      { quote: "The best kind of love is the one that makes home feel softer, calmer, and more beautiful.", author: "Daily Love Notes" },
+      { quote: "A strong couple is built by two people who keep choosing each other in quiet moments too.", author: "Daily Love Notes" },
+      { quote: "Love becomes deeper when kindness stays present in ordinary days, hard days, and hopeful days.", author: "Daily Love Notes" },
+      { quote: "In all the world, there is no heart for me like yours. In all the world, there is no love for you like mine.", author: "Maya Angelou" },
+      { quote: "I saw that you were perfect, and so I loved you. Then I saw that you were not perfect and I loved you even more.", author: "Angelita Lim" },
+      { quote: "If I know what love is, it is because of you.", author: "Hermann Hesse" },
+      { quote: "To love and be loved is to feel the sun from both sides.", author: "David Viscott" },
+      { quote: "You are my today and all of my tomorrows.", author: "Leo Christopher" },
+      { quote: "Every day I spend with you, becomes the new best day of my life.", author: "Unknown" },
+      { quote: "I swear I couldn't love you more than I do right now, and yet I know I will tomorrow.", author: "Leo Christopher" },
+      { quote: "Whatever our souls are made of, his and mine are the same.", author: "Emily Brontë" },
+      ...Array.from({length: 150}, (_, i) => ({ quote: `Every single day, my love for you grows stronger in ways I never imagined. (Day ${i+13})`, author: "Daily Love Notes" }))
+    ];
+
+    const state = {
+      slideIndex: 0,
+      slideTimer: null,
+      currentMonthDate: loadCurrentMonth(),
+      notes: loadLocalJson(STORAGE_KEYS.notes, {}),
+      noteModalKey: null,
+      bookUser: "John",
+      bookPages: { John: [""], Verna: [""], Shared: [""] },
+      currentSpread: 0,
+      db: null
+    };
+
+    // --- HEART DOUBLE CLICK SCRIPT ---
+    document.addEventListener("dblclick", (e) => {
+      if(e.target.tagName === 'BUTTON' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+
+      const wrap = document.createElement("div");
+      wrap.className = "heart-click-wrap";
+      wrap.style.left = e.clientX + "px";
+      wrap.style.top = e.clientY + "px";
+
+      const pulse = document.createElement("div");
+      pulse.className = "heart-pulse";
+      wrap.appendChild(pulse);
+
+      const heart = document.createElement("div");
+      heart.className = "heart-icon";
+      heart.innerHTML = "❤️";
+      wrap.appendChild(heart);
+
+      for(let i=0; i<8; i++) {
+        const angle = (i / 8) * Math.PI * 2;
+        const dist = 65; 
+        const tx = Math.cos(angle) * dist + "px";
+        const ty = Math.sin(angle) * dist + "px";
+        
+        const sparkle = document.createElement("div");
+        sparkle.className = "sparkle";
+        sparkle.style.setProperty("--tx", tx);
+        sparkle.style.setProperty("--ty", ty);
+        wrap.appendChild(sparkle);
+      }
+
+      document.body.appendChild(wrap);
+      setTimeout(() => wrap.remove(), 900);
+    });
+
+    function loadLocalJson(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function saveLocalJson(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch(e) {
+        if (e.name === 'QuotaExceededError') {
+           alert("Your browser's local storage is totally full! Please clear browser data.");
+        }
+      }
+    }
+
+    function loadCurrentMonth() {
+      const raw = localStorage.getItem(STORAGE_KEYS.month);
+      if (raw && /^\d{4}-\d{2}$/.test(raw)) {
+        const [y, m] = raw.split("-").map(Number);
+        return new Date(y, m - 1, 1);
+      }
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), 1);
+    }
+
+    function saveCurrentMonth() {
+      const y = state.currentMonthDate.getFullYear();
+      const m = String(state.currentMonthDate.getMonth() + 1).padStart(2, "0");
+      localStorage.setItem(STORAGE_KEYS.month, `${y}-${m}`);
+    }
+
+    function formatDateKey(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function getDayOfYear() {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
+      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    }
+
+    function capitalizeFirstLetter(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function todayText() {
+      const now = new Date();
+      let fi = now.toLocaleDateString("fi-FI", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      let tr = now.toLocaleDateString("tr-TR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      return `FI: ${capitalizeFirstLetter(fi)} • TR: ${capitalizeFirstLetter(tr)}`;
+    }
+
+    function escapeHtml(text) {
+      return String(text).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+    }
+
+    function oneLine(text) {
+      return text.replace(/\s+/g, " ").trim();
+    }
+
+    function initTop() {
+      document.getElementById("todayLabel").textContent = todayText();
+      updateNotifications();
+    }
+
+    // --- DAILY NEWS FETCHER ---
+    async function loadDailyNews() {
+      // Yle RSS
+      const yleUrl = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Ffeeds.yle.fi%2Fuutiset%2Fv1%2Frecent.rss%3FpublisherIds%3DYLE_UUTISET';
+      
+      // NTV Haber Son Dakika RSS (Much more reliable)
+      const turkishUrl = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.ntv.com.tr%2Fson-dakika.rss';
+
+      async function fetchNews(url, elementId, limit) {
+        const listEl = document.getElementById(elementId);
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+          if (data.status === 'ok') {
+            const items = data.items.slice(0, limit);
+            listEl.innerHTML = items.map(item => `
+              <div class="news-item">
+                <a href="${item.link}" target="_blank">${escapeHtml(item.title)}</a>
+                <div class="news-date">${new Date(item.pubDate).toLocaleDateString()}</div>
+              </div>
+            `).join('');
+          } else {
+            listEl.innerHTML = '<div class="news-item" style="color: rgba(255,255,255,0.5)">Could not load news right now.</div>';
+          }
+        } catch (e) {
+          listEl.innerHTML = '<div class="news-item" style="color: rgba(255,255,255,0.5)">Error loading news.</div>';
+        }
+      }
+
+      fetchNews(yleUrl, 'yleNewsList', 3);
+      fetchNews(turkishUrl, 'turkishNewsList', 3);
+    }
+    
+    // --- DAILY FOOD RECOMMENDATIONS ---
+    function loadDailyFood() {
+      const dayNum = getDayOfYear();
+      const food = foodList[dayNum % foodList.length];
+      document.getElementById("dailyFoodText").textContent = food;
+    }
+
+    // --- DAILY MOOD FEATURE ---
+    const moodOptions = [
+      { id: 'happiest', label: 'Happiest', icon: '🥰' },
+      { id: 'sad', label: 'Sad', icon: '😢' },
+      { id: 'spicy', label: 'Spicy', icon: '🌶️' },
+      { id: 'hangry', label: 'Hangry', icon: '😤' },
+      { id: 'angry', label: 'Angry', icon: '😡' },
+      { id: 'broken', label: 'Broken', icon: '💔' },
+      { id: 'hungry', label: 'Hungry', icon: '🤤' },
+      { id: 'tired', label: 'Tired', icon: '😴' },
+      { id: 'sick', label: 'Sick', icon: '🤒' },
+      { id: 'painful', label: 'Painful', icon: '🤕' }
+    ];
+
+    function initDailyMoods() {
+      const johnGrid = document.getElementById("moodGridJohn");
+      const vernaGrid = document.getElementById("moodGridVerna");
+
+      function renderMoods(container, userKey) {
+        container.innerHTML = "";
+        const savedMood = localStorage.getItem(`love_mood_${userKey}`);
+
+        moodOptions.forEach(m => {
+          const btn = document.createElement("button");
+          btn.className = "mood-btn" + (savedMood === m.id ? " active" : "");
+          btn.innerHTML = `<span>${m.icon}</span> <span>${m.label}</span>`;
+          btn.onclick = () => {
+            localStorage.setItem(`love_mood_${userKey}`, m.id);
+            renderMoods(container, userKey);
+          };
+          container.appendChild(btn);
+        });
+      }
+
+      renderMoods(johnGrid, "john");
+      renderMoods(vernaGrid, "verna");
+    }
+
+    // --- QUICK YELLOW NOTE FEATURE ---
+    function initQuickNote() {
+      const btn = document.getElementById("quickNoteBtn");
+      const modal = document.getElementById("quickNoteModal");
+      const closeBtn = document.getElementById("quickNoteCloseBtn");
+      const textarea = document.getElementById("quickNoteTextarea");
+
+      textarea.value = localStorage.getItem("love_quick_note") || "";
+
+      textarea.addEventListener("input", () => {
+        localStorage.setItem("love_quick_note", textarea.value);
+      });
+
+      btn.onclick = () => {
+        modal.classList.add("open");
+        setTimeout(() => textarea.focus(), 50);
+      };
+
+      closeBtn.onclick = () => modal.classList.remove("open");
+
+      modal.addEventListener("click", (event) => {
+        if (event.target.id === "quickNoteModal") {
+          modal.classList.remove("open");
+        }
+      });
+    }
+
+    // --- MOVIES SLIDER & PLAYER ---
+    function initMovies() {
+      const track = document.getElementById("moviesTrack");
+      const prevBtn = document.getElementById("moviesPrevBtn");
+      const nextBtn = document.getElementById("moviesNextBtn");
+      
+      const modal = document.getElementById("movieModal");
+      const closeBtn = document.getElementById("closeMovieBtn");
+      const player = document.getElementById("singleMoviePlayer");
+      const audio = document.getElementById("loveAudio");
+      const musicBtn = document.getElementById("openMusicBtn");
+
+      prevBtn.onclick = () => track.scrollBy({ left: -250, behavior: 'smooth' });
+      nextBtn.onclick = () => track.scrollBy({ left: 250, behavior: 'smooth' });
+
+      window.openMovie = (videoSrc) => {
+        modal.classList.add("open");
+        
+        if (!audio.paused) {
+          audio.pause();
+          musicBtn.textContent = "▶";
+          audio.dataset.wasPlaying = "true";
+        }
+        
+        player.src = videoSrc;
+        player.play().catch(e => console.log("Video play prevented: ", e));
+      };
+
+      closeBtn.onclick = () => {
+        modal.classList.remove("open");
+        player.pause();
+        player.src = "";
+        
+        if (audio.dataset.wasPlaying === "true") {
+          audio.play().catch(e => console.log(e));
+          musicBtn.textContent = "❚❚";
+          audio.dataset.wasPlaying = "false";
+        }
+      };
+    }
+
+    // --- COUNTDOWN FEATURE ---
+    function initCountdown() {
+      const display = document.getElementById("countdownDisplay");
+      const text = document.getElementById("countdownText");
+      const resetBtn = document.getElementById("countdownResetBtn");
+      const menuBtn = document.getElementById("menuCountdownBtn");
+      const modal = document.getElementById("countdownModal");
+      const dateInput = document.getElementById("countdownDateInput");
+      const saveBtn = document.getElementById("saveCountdownBtn");
+      const closeBtn = document.getElementById("closeCountdownBtn");
+
+      function updateDisplay() {
+        const target = localStorage.getItem("love_countdown_date");
+        if (target) {
+          const today = new Date();
+          today.setHours(0,0,0,0);
+          const targetDate = new Date(target);
+          targetDate.setHours(0,0,0,0);
+          
+          const diffTime = targetDate - today;
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          
+          if (diffDays >= 0) {
+            text.textContent = `✈️🇹🇷 ${diffDays} days left`;
+            display.style.display = "inline-flex";
+          } else {
+            display.style.display = "none";
+            localStorage.removeItem("love_countdown_date");
+          }
+        } else {
+          display.style.display = "none";
+        }
+      }
+
+      menuBtn.onclick = (e) => {
+        e.stopPropagation();
+        closeMenu();
+        const todayStr = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', todayStr);
+        modal.classList.add("open");
+      };
+
+      closeBtn.onclick = () => modal.classList.remove("open");
+
+      saveBtn.onclick = () => {
+        if (dateInput.value) {
+          localStorage.setItem("love_countdown_date", dateInput.value);
+          updateDisplay();
+          modal.classList.remove("open");
+        }
+      };
+
+      resetBtn.onclick = () => {
+        localStorage.removeItem("love_countdown_date");
+        updateDisplay();
+      };
+
+      updateDisplay();
+      setInterval(updateDisplay, 60 * 60 * 1000); 
+    }
+
+    async function loadDailyQuran() {
+      const today = new Date().toISOString().slice(0, 10);
+      const cached = loadLocalJson(STORAGE_KEYS.quranCache, null);
+
+      if (cached && cached.date === today && cached.ref) {
+        renderQuranQuote(cached);
+        return;
+      }
+
+      const dayNum = getDayOfYear();
+      const verse = specialQuranVerses[dayNum % specialQuranVerses.length];
+      const ayahData = { date: today, ref: verse.ref, tr: verse.tr, fi: verse.fi };
+      
+      saveLocalJson(STORAGE_KEYS.quranCache, ayahData);
+      renderQuranQuote(ayahData);
+    }
+
+    function renderQuranQuote(data) {
+      document.getElementById("dailyQuranRef").textContent = data.ref;
+      
+      const fiEl = document.getElementById("dailyQuranFi");
+      const trEl = document.getElementById("dailyQuranTr");
+
+      if (data.fi) {
+        fiEl.style.display = "block";
+        fiEl.textContent = `FI: ${data.fi}`;
+      } else {
+        fiEl.style.display = "none";
+      }
+      
+      trEl.textContent = `TR: ${data.tr}`;
+    }
+
+    async function loadDailyLoveQuote() {
+      const today = new Date().toISOString().slice(0, 10);
+      const cached = loadLocalJson(STORAGE_KEYS.loveQuoteCache, null);
+
+      if (cached && cached.date === today && cached.quote) {
+        renderLoveQuote(cached.quote, cached.author || "");
+        return;
+      }
+
+      const dayNum = getDayOfYear();
+      const finalQuote = loveQuotes[dayNum % loveQuotes.length];
+      
+      saveLocalJson(STORAGE_KEYS.loveQuoteCache, { date: today, ...finalQuote });
+      renderLoveQuote(finalQuote.quote, finalQuote.author);
+    }
+
+    function renderLoveQuote(quote, author) {
+      document.getElementById("dailyLoveQuote").textContent = quote;
+      document.getElementById("dailyLoveAuthor").textContent = author ? `— ${author}` : "";
+    }
+
+    function initSlider() {
+      clearInterval(state.slideTimer);
+      const slidesEl = document.getElementById("slides");
+      const dotsEl = document.getElementById("sliderDots");
+      slidesEl.innerHTML = "";
+      dotsEl.innerHTML = "";
+
+      config.sliderImages.forEach((item, index) => {
+        const slide = document.createElement("article");
+        slide.className = `slide ${index === state.slideIndex ? "active" : ""}`;
+        slide.innerHTML = `<img src="${item.src}" onerror="this.style.display='none'" alt="">`;
+        slidesEl.appendChild(slide);
+
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = index === state.slideIndex ? "active" : "";
+        dot.addEventListener("click", () => {
+          goToSlide(index);
+          restartSlider();
+        });
+        dotsEl.appendChild(dot);
+      });
+
+      document.getElementById("prevSlideBtn").onclick = () => {
+        goToSlide((state.slideIndex - 1 + config.sliderImages.length) % config.sliderImages.length);
+        restartSlider();
+      };
+
+      document.getElementById("nextSlideBtn").onclick = () => {
+        goToSlide((state.slideIndex + 1) % config.sliderImages.length);
+        restartSlider();
+      };
+
+      startSlider();
+    }
+
+    function startSlider() {
+      clearInterval(state.slideTimer);
+      state.slideTimer = setInterval(() => {
+        goToSlide((state.slideIndex + 1) % config.sliderImages.length);
+      }, config.sliderDelayMs);
+    }
+
+    function restartSlider() {
+      startSlider();
+    }
+
+    function goToSlide(index) {
+      state.slideIndex = index;
+      document.querySelectorAll(".slide").forEach((slide, i) => {
+        slide.classList.toggle("active", i === index);
+      });
+      document.querySelectorAll(".slider-dots button").forEach((dot, i) => {
+        dot.classList.toggle("active", i === index);
+      });
+    }
+
+    function initReels() {
+      const thumbContainer = document.getElementById("reelsThumbContainer");
+      const modalContainer = document.getElementById("reelsModalContainer");
+      const modal = document.getElementById("reelsModal");
+      const closeBtn = document.getElementById("closeReelsBtn");
+      
+      const audio = document.getElementById("loveAudio");
+      const musicBtn = document.getElementById("openMusicBtn");
+
+      if (!thumbContainer || !modalContainer) return;
+      thumbContainer.innerHTML = "";
+      modalContainer.innerHTML = "";
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const vid = entry.target.querySelector("video");
+          if (!vid) return;
+          if (entry.isIntersecting && modal.classList.contains("open")) {
+            vid.play().catch(e => console.log(e));
+          } else {
+            vid.pause();
+          }
+        });
+      }, { threshold: 0.6 });
+      
+      for (let i = 1; i <= config.totalReels; i++) {
+        
+        const thumb = document.createElement("div");
+        thumb.className = "reel-thumb";
+        thumb.innerHTML = `
+          <video src="reels/${i}.reels.mp4" preload="metadata" muted playsinline></video>
+          <div class="play-overlay">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+        `;
+        
+        const thumbVideo = thumb.querySelector("video");
+        thumbVideo.addEventListener("loadedmetadata", () => {
+          thumbVideo.currentTime = 1.0;
+        });
+        
+        const fullReel = document.createElement("div");
+        fullReel.className = "reel-full";
+        fullReel.id = `reel-full-${i}`;
+        fullReel.innerHTML = `
+          <video src="reels/${i}.reels.mp4" controls playsinline preload="auto" loop></video>
+        `;
+
+        observer.observe(fullReel);
+
+        thumb.onclick = () => {
+          modal.classList.add("open");
+          fullReel.scrollIntoView({ behavior: 'instant' });
+          
+          if (!audio.paused) {
+            audio.pause();
+            musicBtn.textContent = "▶";
+            audio.dataset.wasPlaying = "true";
+          }
+
+          modalContainer.querySelectorAll("video").forEach(v => v.pause());
+          
+          const v = fullReel.querySelector("video");
+          if(v) v.play().catch(e=>console.log(e));
+        };
+
+        thumbContainer.appendChild(thumb);
+        modalContainer.appendChild(fullReel);
+      }
+
+      closeBtn.onclick = () => {
+        modal.classList.remove("open");
+        modalContainer.querySelectorAll("video").forEach(v => v.pause());
+        
+        if (audio.dataset.wasPlaying === "true") {
+          audio.play().catch(e=>console.log(e));
+          musicBtn.textContent = "❚❚";
+          audio.dataset.wasPlaying = "false";
+        }
+      };
+    }
+
+    async function loadWeather() {
+      await Promise.all(
+        config.weatherLocations.map(async (loc) => {
+          const root = document.getElementById(loc.id);
+          const iconEl = root.querySelector("[data-icon]");
+          const tempEl = root.querySelector("[data-temp]");
+
+          try {
+            const url =
+              `https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}` +
+              `&current_weather=true&timezone=auto`;
+
+            const response = await fetch(url, { cache: "no-store" });
+            if (!response.ok) throw new Error("weather");
+
+            const data = await response.json();
+            const current = data.current_weather || {};
+            const code = Number(current.weathercode);
+
+            iconEl.textContent = weatherIcons[code] || "🌤️";
+            tempEl.textContent = Number.isFinite(current.temperature)
+              ? `${Math.round(current.temperature)}°`
+              : "--°";
+          } catch {
+            iconEl.textContent = "⚪";
+            tempEl.textContent = "--°";
+          }
+        })
+      );
+    }
+
+    async function loadPrayerTimes() {
+      const chip = document.getElementById("prayTimesChip");
+      try {
+        const res = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Kouvola&country=Finland&method=2", { cache: "no-store" });
+        const data = await res.json();
+        if (data && data.code === 200) {
+          const timings = data.data.timings;
+          chip.innerHTML = `🕌 <strong>Kouvola:</strong> Fajr ${timings.Fajr} &bull; Dhuhr ${timings.Dhuhr} &bull; Asr ${timings.Asr} &bull; Maghrib ${timings.Maghrib} &bull; Isha ${timings.Isha}`;
+        } else {
+          chip.innerHTML = `🕌 Prayer times unavailable`;
+        }
+      } catch (e) {
+        chip.innerHTML = `🕌 Prayer times unavailable`;
+      }
+    }
+
+    function updateNotifications() {
+      const today = new Date();
+      const notifList = document.getElementById("notifList");
+      const notifBadge = document.getElementById("notifBadge");
+      let count = 0;
+      let html = "";
+
+      for (let i = 0; i <= 7; i++) {
+        let d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
+        let key = formatDateKey(d);
+        if (state.notes[key] && state.notes[key].trim() !== "") {
+          count++;
+          let daysWord = (i === 0) ? "Today" : (i === 1) ? "Tomorrow" : `In ${i} days`;
+          html += `<div class="notif-item">
+                     <div class="notif-date">${daysWord} (${d.getDate()}.${d.getMonth() + 1}.):</div>
+                     <div>${escapeHtml(oneLine(state.notes[key]))}</div>
+                   </div>`;
+        }
+      }
+
+      if (count > 0) {
+        notifBadge.textContent = count;
+        notifBadge.style.display = "inline-block";
+        notifList.innerHTML = html;
+      } else {
+        notifBadge.style.display = "none";
+        notifList.innerHTML = `<div style="padding: 8px;">Ei tulevia tapahtumia<br><small style="color:var(--muted)">No upcoming events in next 7 days</small></div>`;
+      }
+    }
+
+    function initCalendar() {
+      const weekdayRow = document.getElementById("weekdayRow");
+      weekdayRow.innerHTML = "";
+      weekdaysFi.forEach((day) => {
+        const el = document.createElement("div");
+        el.className = "weekday";
+        el.textContent = day;
+        weekdayRow.appendChild(el);
+      });
+
+      document.getElementById("calendarToggleBtn").onclick = () => {
+        document.getElementById("calendarPop").classList.toggle("open");
+      };
+
+      document.getElementById("closeCalendarBtn").onclick = closeCalendar;
+
+      document.getElementById("prevMonthBtn").onclick = () => {
+        state.currentMonthDate = new Date(
+          state.currentMonthDate.getFullYear(),
+          state.currentMonthDate.getMonth() - 1,
+          1
+        );
+        saveCurrentMonth();
+        renderCalendar();
+      };
+
+      document.getElementById("nextMonthBtn").onclick = () => {
+        state.currentMonthDate = new Date(
+          state.currentMonthDate.getFullYear(),
+          state.currentMonthDate.getMonth() + 1,
+          1
+        );
+        saveCurrentMonth();
+        renderCalendar();
+      };
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeCalendar();
+          closeMenu();
+          closeBook();
+          closeNoteModal();
+          document.getElementById("countdownModal").classList.remove("open");
+          document.getElementById("quickNoteModal").classList.remove("open");
+          document.getElementById("notifPanel").classList.remove("open");
+          
+          const reelsModal = document.getElementById("reelsModal");
+          if(reelsModal) {
+             reelsModal.classList.remove("open");
+             document.getElementById("reelsModalContainer").querySelectorAll("video").forEach(v => v.pause());
+          }
+          const movieModal = document.getElementById("movieModal");
+          if(movieModal) {
+             movieModal.classList.remove("open");
+             document.getElementById("singleMoviePlayer").pause();
+          }
+        }
+      });
+
+      renderCalendar();
+    }
+
+    function closeCalendar() {
+      document.getElementById("calendarPop").classList.remove("open");
+    }
+
+    function renderCalendar() {
+      const title = document.getElementById("calendarTitle");
+      const grid = document.getElementById("calendarGrid");
+      const notesList = document.getElementById("notesList");
+
+      const year = state.currentMonthDate.getFullYear();
+      const month = state.currentMonthDate.getMonth();
+      title.textContent = `${monthsFi[month]} ${year}`;
+      grid.innerHTML = "";
+      notesList.innerHTML = "";
+
+      const first = new Date(year, month, 1);
+      const last = new Date(year, month + 1, 0);
+      const totalDays = last.getDate();
+      const startOffset = (first.getDay() + 6) % 7;
+      const today = new Date();
+      const todayKey = formatDateKey(today);
+      
+      const isCurrentMonth = (today.getFullYear() === year && today.getMonth() === month);
+      const startDayForNotes = isCurrentMonth ? today.getDate() : 1;
+
+      for (let i = 0; i < startOffset; i += 1) {
+        const empty = document.createElement("button");
+        empty.type = "button";
+        empty.className = "day empty";
+        grid.appendChild(empty);
+      }
+
+      for (let day = 1; day <= totalDays; day += 1) {
+        const key = formatDateKey(new Date(year, month, day));
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "day";
+        btn.textContent = String(day);
+
+        if (key === todayKey) btn.classList.add("today");
+        if ((state.notes[key] || "").trim()) btn.classList.add("has-note");
+
+        btn.addEventListener("click", () => {
+          scrollToNoteRow(day);
+          openNoteModal(key, day, month, year);
+        });
+
+        grid.appendChild(btn);
+      }
+
+      for (let day = startDayForNotes; day <= totalDays; day += 1) {
+        const key = formatDateKey(new Date(year, month, day));
+        const row = document.createElement("div");
+        row.className = "note-row";
+        row.id = `note-row-${day}`;
+
+        const preview = (state.notes[key] || "").trim();
+        row.innerHTML = `
+          <div class="note-row-label">${day}.</div>
+          <div class="note-row-preview ${preview ? "" : "empty"}" data-note-key="${key}">
+            ${preview ? escapeHtml(oneLine(preview)) : "Click to add a note..."}
+          </div>
+        `;
+
+        row.querySelector(".note-row-preview").addEventListener("click", () => {
+          openNoteModal(key, day, month, year);
+        });
+
+        notesList.appendChild(row);
+      }
+    }
+
+    function scrollToNoteRow(day) {
+      const notesList = document.getElementById("notesList");
+      const row = document.getElementById(`note-row-${day}`);
+      if (!row) return;
+      notesList.scrollTo({ top: row.offsetTop - 6, behavior: "smooth" });
+    }
+
+    function updateCalendarDayStates() {
+      const year = state.currentMonthDate.getFullYear();
+      const month = state.currentMonthDate.getMonth();
+      const dayButtons = Array.from(document.querySelectorAll("#calendarGrid .day")).filter(
+        (el) => !el.classList.contains("empty")
+      );
+
+      dayButtons.forEach((btn, index) => {
+        const day = index + 1;
+        const key = formatDateKey(new Date(year, month, day));
+        btn.classList.toggle("has-note", Boolean((state.notes[key] || "").trim()));
+      });
+    }
+
+    function openNoteModal(key, day, month, year) {
+      state.noteModalKey = key;
+      document.getElementById("noteModalTitle").textContent = `Muistiinpano ${day}.${month + 1}.${year}`;
+      document.getElementById("noteModalTextarea").value = state.notes[key] || "";
+      document.getElementById("noteModal").classList.add("open");
+      setTimeout(() => document.getElementById("noteModalTextarea").focus(), 50);
+    }
+
+    function closeNoteModal() {
+      document.getElementById("noteModal").classList.remove("open");
+      state.noteModalKey = null;
+    }
+
+    function initNoteModal() {
+      const textarea = document.getElementById("noteModalTextarea");
+      const closeBtn = document.getElementById("noteCloseBtn");
+      const modal = document.getElementById("noteModal");
+
+      textarea.addEventListener("input", () => {
+        if (!state.noteModalKey) return;
+        const value = textarea.value;
+        if (value.trim()) state.notes[state.noteModalKey] = value;
+        else delete state.notes[state.noteModalKey];
+        saveLocalJson(STORAGE_KEYS.notes, state.notes);
+        updateCalendarDayStates();
+        renderCalendar();
+        updateNotifications(); 
+      });
+
+      closeBtn.onclick = closeNoteModal;
+
+      modal.addEventListener("click", (event) => {
+        if (event.target.id === "noteModal") {
+          closeNoteModal();
+        }
+      });
+      document.getElementById("countdownModal").addEventListener("click", (event) => {
+        if (event.target.id === "countdownModal") {
+          document.getElementById("countdownModal").classList.remove("open");
+        }
+      });
+    }
+
+    async function openDb() {
+      return await new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(BOOK_STORE)) {
+            db.createObjectStore(BOOK_STORE);
+          }
+        };
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function dbGet(key) {
+      if (!state.db) return null;
+      return await new Promise((resolve, reject) => {
+        const tx = state.db.transaction(BOOK_STORE, "readonly");
+        const store = tx.objectStore(BOOK_STORE);
+        const req = store.get(key);
+        req.onsuccess = () => resolve(req.result ?? null);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function dbSet(key, value) {
+      if (!state.db) return;
+      return await new Promise((resolve, reject) => {
+        const tx = state.db.transaction(BOOK_STORE, "readwrite");
+        const store = tx.objectStore(BOOK_STORE);
+        const req = store.put(value, key);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function ensureBookUser() {
+      if (!state.bookPages[state.bookUser] || !Array.isArray(state.bookPages[state.bookUser])) {
+        state.bookPages[state.bookUser] = [""];
+      }
+      if (state.bookPages[state.bookUser].length === 0) {
+        state.bookPages[state.bookUser] = [""];
+      }
+      return state.bookPages[state.bookUser];
+    }
+
+    async function saveBookPages() {
+      await dbSet("bookPages", state.bookPages);
+    }
+
+    function getSpreadIndices() {
+      const leftIndex = state.currentSpread * 2;
+      return { leftIndex, rightIndex: leftIndex + 1 };
+    }
+
+    function getBookMetrics() {
+      const textarea = document.getElementById("leftPageTextarea");
+      const measurer = document.getElementById("bookMeasurer");
+      const style = getComputedStyle(textarea);
+
+      measurer.style.width = textarea.clientWidth + "px";
+      measurer.style.padding = style.padding;
+      measurer.style.fontFamily = style.fontFamily;
+      measurer.style.fontSize = style.fontSize;
+      measurer.style.lineHeight = style.lineHeight;
+      measurer.style.letterSpacing = style.letterSpacing;
+      measurer.style.boxSizing = "border-box";
+
+      return {
+        maxHeight: textarea.clientHeight || parseFloat(style.height) || 525,
+        measurer
+      };
+    }
+
+    function pageFits(text) {
+      const { measurer, maxHeight } = getBookMetrics();
+      measurer.textContent = text || "";
+      return measurer.scrollHeight <= (maxHeight + 5); 
+    }
+
+    function splitTextToFit(text) {
+      if (!text) return { fit: "", rest: "" };
+      if (pageFits(text)) return { fit: text, rest: "" };
+
+      let low = 0;
+      let high = text.length;
+      let best = 0;
+
+      while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        const sample = text.slice(0, mid);
+        if (pageFits(sample)) {
+          best = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      if (best <= 0) return { fit: text.slice(0, 1), rest: text.slice(1) };
+
+      let split = best;
+      const lookback = Math.max(0, best - 80);
+      const chunk = text.slice(lookback, best);
+      const breakCandidates = [
+        chunk.lastIndexOf("\n"),
+        chunk.lastIndexOf(" "),
+        chunk.lastIndexOf(". "),
+        chunk.lastIndexOf(", ")
+      ];
+      const candidate = Math.max(...breakCandidates);
+
+      if (candidate > 0) {
+        split = lookback + candidate + 1;
+      }
+
+      return {
+        fit: text.slice(0, split),
+        rest: text.slice(split)
+      };
+    }
+
+    function paginateText(text) {
+      if (!text) return [""];
+      const pages = [];
+      let remaining = text;
+
+      while (remaining.length > 0) {
+        const { fit, rest } = splitTextToFit(remaining);
+        pages.push(fit);
+        if (!rest) break;
+        remaining = rest;
+      }
+
+      return pages.length ? pages : [""];
+    }
+
+    function trimTrailingEmptyPages(pages) {
+      while (pages.length > 1 && pages[pages.length - 1] === "") {
+        pages.pop();
+      }
+      return pages;
+    }
+
+    async function repaginateFrom(startIndex) {
+      const pages = ensureBookUser();
+      const tailText = pages.slice(startIndex).join("");
+      const newTailPages = paginateText(tailText);
+      pages.splice(startIndex, pages.length - startIndex, ...newTailPages);
+      trimTrailingEmptyPages(pages);
+      await saveBookPages();
+    }
+
+    function setCaretToEnd(textarea) {
+      textarea.focus();
+      const len = textarea.value.length;
+      textarea.setSelectionRange(len, len);
+    }
+
+    function playFlip(direction) {
+      const el = direction === "next"
+        ? document.getElementById("flipNextSheet")
+        : document.getElementById("flipPrevSheet");
+
+      el.classList.remove("animate");
+      void el.offsetWidth;
+      el.classList.add("animate");
+      setTimeout(() => el.classList.remove("animate"), 920);
+    }
+
+    function fitBookToViewport() {
+      const shell = document.querySelector(".book-shell");
+      const stage = document.getElementById("bookStage");
+      const wrap = document.getElementById("bookTurnWrap");
+
+      if (!shell || !stage || !wrap) return;
+
+      const rootStyle = getComputedStyle(document.documentElement);
+      const baseWidth = parseFloat(rootStyle.getPropertyValue("--book-base-width")) || 940;
+      const baseHeight = parseFloat(rootStyle.getPropertyValue("--book-base-height")) || 670;
+
+      const shellStyle = getComputedStyle(shell);
+      const shellPaddingX =
+        parseFloat(shellStyle.paddingLeft || "0") + parseFloat(shellStyle.paddingRight || "0");
+      const shellPaddingY =
+        parseFloat(shellStyle.paddingTop || "0") + parseFloat(shellStyle.paddingBottom || "0");
+
+      const controlsHeight = 78;
+      const topHeight = 92;
+
+      const availableWidth = Math.max(320, shell.clientWidth - shellPaddingX - 8);
+      const availableHeight = Math.max(
+        360,
+        window.innerHeight - shellPaddingY - controlsHeight - topHeight - 42
+      );
+
+      const widthScale = availableWidth / baseWidth;
+      const heightScale = availableHeight / baseHeight;
+      const scale = Math.max(0.20, Math.min(widthScale, heightScale, 1.0));
+
+      wrap.style.transform = `scale(${scale})`;
+      stage.style.minHeight = `${Math.ceil(baseHeight * scale) + 24}px`;
+    }
+
+    function renderBook() {
+      const pages = ensureBookUser();
+      const maxSpread = Math.max(0, Math.ceil(pages.length / 2) - 1);
+      if (state.currentSpread > maxSpread) state.currentSpread = maxSpread;
+
+      const { leftIndex, rightIndex } = getSpreadIndices();
+
+      const pagePrefix = state.bookUser === "Shared" ? "Our Dreams" : state.bookUser;
+
+      document.getElementById("leftPageTitle").textContent = `${pagePrefix} — Page ${leftIndex + 1}`;
+      document.getElementById("rightPageTitle").textContent = `${pagePrefix} — Page ${rightIndex + 1}`;
+      document.getElementById("leftPageNumber").textContent = leftIndex + 1;
+      document.getElementById("rightPageNumber").textContent = rightIndex + 1;
+      document.getElementById("leftPageTextarea").value = pages[leftIndex] || "";
+      document.getElementById("rightPageTextarea").value = pages[rightIndex] || "";
+      document.getElementById("prevBookPagesBtn").disabled = state.currentSpread === 0;
+      document.getElementById("nextBookPagesBtn").disabled = state.currentSpread >= maxSpread;
+      fitBookToViewport();
+    }
+
+    function focusPage(side) {
+      const el = side === "left"
+        ? document.getElementById("leftPageTextarea")
+        : document.getElementById("rightPageTextarea");
+      setCaretToEnd(el);
+    }
+
+    async function updateVisibleBookPage(side) {
+      const pages = ensureBookUser();
+      const { leftIndex, rightIndex } = getSpreadIndices();
+
+      while (pages.length <= rightIndex) pages.push("");
+
+      const leftTextarea = document.getElementById("leftPageTextarea");
+      const rightTextarea = document.getElementById("rightPageTextarea");
+
+      const leftIsAtEnd = leftTextarea.selectionStart === leftTextarea.value.length;
+      const rightIsAtEnd = rightTextarea.selectionStart === rightTextarea.value.length;
+
+      pages[leftIndex] = leftTextarea.value;
+      pages[rightIndex] = rightTextarea.value;
+
+      const originalLeft = leftTextarea.value;
+      const originalRight = rightTextarea.value;
+
+      await repaginateFrom(leftIndex);
+      const updated = ensureBookUser();
+
+      renderBook();
+
+      if (side === "left" && (updated[leftIndex] || "") !== originalLeft && leftIsAtEnd) {
+        focusPage("right");
+      }
+
+      if (side === "right" && (updated[rightIndex] || "") !== originalRight && rightIsAtEnd) {
+        const maxSpread = Math.max(0, Math.ceil(updated.length / 2) - 1);
+        if (state.currentSpread < maxSpread) {
+          playFlip("next");
+          state.currentSpread += 1;
+          setTimeout(() => {
+            renderBook();
+            focusPage("left");
+          }, 180);
+        }
+      }
+    }
+
+    async function openBook(mode) {
+      const titleEl = document.getElementById("bookMainTitle");
+      const tabsEl = document.getElementById("bookTabsContainer");
+      const secCloseBtn = document.getElementById("closeBookBtnSecondary");
+      
+      if (mode === 'dream') {
+        titleEl.textContent = "Our Dream Book";
+        tabsEl.style.display = "none";
+        secCloseBtn.style.display = "inline-block";
+        switchBookUser("Shared");
+      } else {
+        titleEl.textContent = "Our Love Book";
+        tabsEl.style.display = "flex";
+        secCloseBtn.style.display = "none";
+        if (state.bookUser === "Shared") {
+            switchBookUser("John");
+        }
+      }
+
+      document.getElementById("bookModal").classList.add("open");
+      requestAnimationFrame(async () => {
+        await repaginateFrom(0);
+        renderBook();
+      });
+    }
+
+    function closeBook() {
+      document.getElementById("bookModal").classList.remove("open");
+    }
+
+    function switchBookUser(user) {
+      state.bookUser = user;
+      state.currentSpread = 0;
+      document.getElementById("bookTabJohn").classList.toggle("active", user === "John");
+      document.getElementById("bookTabVerna").classList.toggle("active", user === "Verna");
+      renderBook();
+    }
+
+    function goToNextSpread() {
+      const pages = ensureBookUser();
+      const maxSpread = Math.max(0, Math.ceil(pages.length / 2) - 1);
+      if (state.currentSpread >= maxSpread) return;
+      playFlip("next");
+      state.currentSpread += 1;
+      setTimeout(renderBook, 180);
+    }
+
+    function goToPrevSpread() {
+      if (state.currentSpread === 0) return;
+      playFlip("prev");
+      state.currentSpread -= 1;
+      setTimeout(renderBook, 180);
+    }
+
+    function initBook() {
+      document.getElementById("bookTabJohn").onclick = () => switchBookUser("John");
+      document.getElementById("bookTabVerna").onclick = () => switchBookUser("Verna");
+      document.getElementById("closeBookBtn").onclick = closeBook;
+      document.getElementById("closeBookBtnSecondary").onclick = closeBook;
+      
+      document.getElementById("prevBookPagesBtn").onclick = goToPrevSpread;
+      document.getElementById("nextBookPagesBtn").onclick = goToNextSpread;
+
+      document.getElementById("prevPageZone").onclick = goToPrevSpread;
+      document.getElementById("nextPageZone").onclick = goToNextSpread;
+
+      document.getElementById("leftPageTextarea").addEventListener("input", () => {
+        updateVisibleBookPage("left");
+      });
+
+      document.getElementById("rightPageTextarea").addEventListener("input", () => {
+        updateVisibleBookPage("right");
+      });
+
+      document.getElementById("bookModal").addEventListener("click", (event) => {
+        if (event.target.id === "bookModal") closeBook();
+      });
+
+      renderBook();
+    }
+
+    function shuffleArray(array) {
+      let arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function initMusic() {
+      const button = document.getElementById("openMusicBtn");
+      const audio = document.getElementById("loveAudio");
+
+      let playlist = shuffleArray(config.musicFiles);
+      let currentTrackIndex = 0;
+
+      if (playlist.length > 0) {
+        audio.src = playlist[currentTrackIndex];
+        audio.load();
+      }
+
+      button.onclick = async () => {
+        if (!playlist || playlist.length === 0) {
+          alert("Add music files to the config.musicFiles array first!");
+          return;
+        }
+
+        try {
+          if (audio.paused) {
+            await audio.play();
+            button.textContent = "❚❚";
+          } else {
+            audio.pause();
+            button.textContent = "▶";
+          }
+        } catch(e) {
+          console.error(e);
+          alert("Music could not be played. Make sure you created a folder named exactly 'music' right next to this HTML file, and put songs inside.");
+        }
+      };
+
+      audio.addEventListener("ended", () => {
+        currentTrackIndex++;
+        if (currentTrackIndex >= playlist.length) {
+          playlist = shuffleArray(config.musicFiles);
+          currentTrackIndex = 0;
+        }
+        audio.src = playlist[currentTrackIndex];
+        audio.load();
+        audio.play().catch(e => console.error(e));
+      });
+    }
+
+    function initMenu() {
+      const panel = document.getElementById("menuPanel");
+      const toggle = document.getElementById("menuToggleBtn");
+      const openBookBtn = document.getElementById("menuOpenBookBtn");
+      const openDreamBookBtn = document.getElementById("menuOpenDreamBookBtn");
+      const closeBtn = document.getElementById("menuCloseBtn");
+      
+      const notifToggle = document.getElementById("notifToggleBtn");
+      const notifPanel = document.getElementById("notifPanel");
+
+      toggle.onclick = (event) => {
+        event.stopPropagation();
+        panel.classList.toggle("open");
+        notifPanel.classList.remove("open");
+      };
+      
+      notifToggle.onclick = (event) => {
+        event.stopPropagation();
+        notifPanel.classList.toggle("open");
+        panel.classList.remove("open");
+      };
+
+      openBookBtn.onclick = (event) => {
+        event.stopPropagation();
+        openBook('love');
+        closeMenu();
+      };
+      
+      openDreamBookBtn.onclick = (event) => {
+        event.stopPropagation();
+        openBook('dream');
+        closeMenu();
+      };
+
+      closeBtn.onclick = (event) => {
+        event.stopPropagation();
+        closeMenu();
+      };
+
+      panel.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
+      notifPanel.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!panel.contains(event.target) && !toggle.contains(event.target)) {
+          closeMenu();
+        }
+        if (!notifPanel.contains(event.target) && !notifToggle.contains(event.target)) {
+          notifPanel.classList.remove("open");
+        }
+      });
+    }
+
+    function closeMenu() {
+      document.getElementById("menuPanel").classList.remove("open");
+    }
+
+    async function initPersistence() {
+      try {
+        state.db = await openDb();
+        const saved = await dbGet("bookPages");
+        if (saved && typeof saved === "object") {
+          state.bookPages = saved;
+          if (!state.bookPages.Shared) {
+              state.bookPages.Shared = [""];
+          }
+        }
+      } catch {
+        state.bookPages = { John: [""], Verna: [""], Shared: [""] };
+      }
+    }
+
+    async function init() {
+      await initPersistence();
+      initTop();
+      loadDailyNews(); 
+      loadDailyFood();
+      initDailyMoods();
+      initQuickNote();
+      initMovies();
+      await loadPrayerTimes();
+      await loadDailyQuran();
+      await loadDailyLoveQuote();
+      initSlider();
+      initReels();
+      initCalendar();
+      initNoteModal();
+      initCountdown();
+      initMenu();
+      initBook();
+      initMusic();
+      await loadWeather();
+      fitBookToViewport();
+
+      window.addEventListener("resize", async () => {
+        fitBookToViewport();
+        if (document.getElementById("bookModal").classList.contains("open")) {
+          await repaginateFrom(0);
+          renderBook();
+        }
+      });
+
+      setInterval(loadWeather, 15 * 60 * 1000);
+      setInterval(loadPrayerTimes, 60 * 60 * 1000); 
+    }
+
+    init();
+  </script>
+</body>
+</html>
